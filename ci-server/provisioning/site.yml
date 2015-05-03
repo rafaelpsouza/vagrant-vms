@@ -1,0 +1,30 @@
+# This playbook install vim
+---
+- hosts: all 
+  sudo: yes
+  roles: 
+    - { role: ansiblebit.oracle-java, oracle_java_default: yes }
+  tasks:
+  - name: Add Jenkins key
+    apt_key: url=https://jenkins-ci.org/debian/jenkins-ci.org.key state=present
+  - name: Add Jenkis repository
+    apt_repository: repo='deb http://pkg.jenkins-ci.org/debian binary/' state=present
+  - name: Ensure Latest Jenkins is installed
+    apt: name=jenkins state=latest update_cache=yes
+  - name: Ensure Jenkis is running
+    service: name=jenkins state=started
+  - name: Download Gradle
+    get_url: url=https://services.gradle.org/distributions/gradle-2.3-bin.zip dest=/usr/local/gradle-2.3-bin.zip
+  - name: Unzip Gradle
+    unarchive: src=/usr/local/gradle-2.3-bin.zip dest=/usr/local/ copy=no
+  - name: Add GRADLE_HOME
+    copy: src=files/gradle.sh dest=/etc/profile.d/ mode=755
+  - name: Ensure Git is present
+    apt: name=git state=present
+  - name: Ensure software-properties-common is present
+    apt: name=software-properties-common state=present
+  - name: Add Ansible repository
+    apt_repository: repo='ppa:ansible/ansible'
+  - name: Enchure Ansible is present
+    apt: name=ansible state=present update_cache=yes
+  - include: tasks/docker.yml
