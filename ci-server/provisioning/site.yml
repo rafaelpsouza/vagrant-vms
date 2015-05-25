@@ -28,3 +28,7 @@
   - name: Enchure Ansible is present
     apt: name=ansible state=present update_cache=yes
   - include: tasks/docker.yml
+
+  # Missing
+  # apt-get install python-pip
+  # sudo pip install docker-py

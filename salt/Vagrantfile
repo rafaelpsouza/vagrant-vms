@@ -1,0 +1,24 @@
+VAGRANTFILE_API_VERSION = "2"
+
+Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
+	config.vm.synced_folder ".", "/vagrant", disabled: true
+	
+	config.vm.define "master", primary: true do |master|
+		master.vm.box = "hashicorp/precise64"
+		master.vm.network "private_network", ip: "192.168.70.2"
+		master.vm.provision :shell, path: "master-provision.sh"
+	end
+
+	config.vm.define "minion1" do |minion1|
+		minion1.vm.box = "hashicorp/precise64"
+		minion1.vm.network "private_network", ip: "192.168.70.3"
+		minion1.vm.provision :shell, path: "minion-provision.sh"
+	end
+
+	config.vm.define "minion2" do |minion2|
+		minion2.vm.box = "hashicorp/precise64"
+		minion2.vm.network "private_network", ip: "192.168.70.4"
+		minion2.vm.provision :shell, path: "minion-provision.sh"
+	end
+
+end
